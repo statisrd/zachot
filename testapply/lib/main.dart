@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(TaskManagerApp());
+void main() => runApp(OrderManagementApp());
 
-class TaskManagerApp extends StatelessWidget {
+class OrderManagementApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Task Manager',
+      title: 'Order Management',
       theme: ThemeData.dark(),
       home: RegistrationScreen(),
     );
@@ -26,7 +26,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Регистрация'),
+        title: Text('Вход в систему'),
       ),
       body: Center(
         child: Column(
@@ -50,16 +50,135 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               decoration: InputDecoration(labelText: 'Пароль'),
             ),
             SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => OrderManagementScreen(
+                          username: _username,
+                        ),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.white54,
+                    padding: EdgeInsets.all(15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    textStyle: TextStyle(fontSize: 20 * 1.7),
+                  ),
+                  child: Text(
+                    'Войти',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
+                SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => RegistrationForm(),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.white54,
+                    padding: EdgeInsets.all(15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    textStyle: TextStyle(fontSize: 20 * 1.7),
+                  ),
+                  child: Text(
+                    'Регистрация',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class RegistrationForm extends StatefulWidget {
+  @override
+  _RegistrationFormState createState() => _RegistrationFormState();
+}
+
+class _RegistrationFormState extends State<RegistrationForm> {
+  String _email = '';
+  String _password = '';
+  String _confirmPassword = '';
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Регистрация'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            TextField(
+              onChanged: (value) {
+                setState(() {
+                  _email = value;
+                });
+              },
+              decoration: InputDecoration(labelText: 'Введите email'),
+            ),
+            TextField(
+              onChanged: (value) {
+                setState(() {
+                  _password = value;
+                });
+              },
+              obscureText: true,
+              decoration: InputDecoration(labelText: 'Введите пароль'),
+            ),
+            TextField(
+              onChanged: (value) {
+                setState(() {
+                  _confirmPassword = value;
+                });
+              },
+              obscureText: true,
+              decoration: InputDecoration(labelText: 'Повторите пароль'),
+            ),
+            SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => TaskManagerScreen(
-                      username: _username,
-                    ),
-                  ),
-                );
+                if (_password == _confirmPassword) {
+                  Navigator.pop(context);
+                } else {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text('Ошибка'),
+                        content: Text('Пароли не совпадают.'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text('ОК'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }
               },
               style: ElevatedButton.styleFrom(
                 primary: Colors.white54,
@@ -67,11 +186,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(25),
                 ),
-                // Увеличьте размер кнопки на 70%
                 textStyle: TextStyle(fontSize: 20 * 1.7),
               ),
               child: Text(
-                'Войти',
+                'Зарегистрироваться',
                 style: TextStyle(fontSize: 20),
               ),
             ),
@@ -82,16 +200,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   }
 }
 
-class TaskManagerScreen extends StatefulWidget {
+class OrderManagementScreen extends StatefulWidget {
   final String username;
 
-  TaskManagerScreen({required this.username});
+  OrderManagementScreen({required this.username});
 
   @override
-  _TaskManagerScreenState createState() => _TaskManagerScreenState();
+  _OrderManagementScreenState createState() => _OrderManagementScreenState();
 }
 
-class _TaskManagerScreenState extends State<TaskManagerScreen> {
+class _OrderManagementScreenState extends State<OrderManagementScreen> {
   List<Customer> _customers = [];
   List<Task> _tasks = [];
   TextEditingController taskController = TextEditingController();
@@ -102,7 +220,7 @@ class _TaskManagerScreenState extends State<TaskManagerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Менеджер задач'),
+        title: Text('Менеджер заказов'),
       ),
       body: Center(
         child: Column(
@@ -133,7 +251,6 @@ class _TaskManagerScreenState extends State<TaskManagerScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
                     ),
-                    // Увеличьте размер кнопки на 70%
                     textStyle: TextStyle(fontSize: 20 * 1.7),
                   ),
                   child: Text('Создать заказчика', style: TextStyle(fontSize: 20)),
@@ -162,7 +279,6 @@ class _TaskManagerScreenState extends State<TaskManagerScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
                     ),
-                    // Увеличьте размер кнопки на 70%
                     textStyle: TextStyle(fontSize: 20 * 1.7),
                   ),
                   child: Text('Создать задачу', style: TextStyle(fontSize: 20)),
@@ -194,7 +310,6 @@ class _TaskManagerScreenState extends State<TaskManagerScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(25),
                 ),
-                // Увеличьте размер кнопки на 70%
                 textStyle: TextStyle(fontSize: 20 * 1.7),
               ),
               child: Text('Список задач', style: TextStyle(fontSize: 20)),
@@ -291,6 +406,8 @@ class TaskForm extends StatefulWidget {
 class _TaskFormState extends State<TaskForm> {
   String _task = '';
   Customer? _selectedCustomer;
+  DateTime? _dueDate;
+  String _priority = 'Low';
 
   @override
   void initState() {
@@ -298,6 +415,8 @@ class _TaskFormState extends State<TaskForm> {
     if (widget.initialTask != null) {
       _selectedCustomer = widget.initialTask!.customer;
       _task = widget.initialTask!.task;
+      _dueDate = widget.initialTask!.dueDate;
+      _priority = widget.initialTask!.priority;
     }
   }
 
@@ -328,6 +447,35 @@ class _TaskFormState extends State<TaskForm> {
             },
             decoration: InputDecoration(labelText: 'Задача'),
           ),
+          TextField(
+            onChanged: (value) {
+              _priority = value;
+            },
+            decoration: InputDecoration(labelText: 'Приоритет'),
+          ),
+          Row(
+            children: [
+              Text('Срок выполнения: '),
+              IconButton(
+                onPressed: () {
+                  showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime(2101),
+                  ).then((pickedDate) {
+                    if (pickedDate != null) {
+                      setState(() {
+                        _dueDate = pickedDate;
+                      });
+                    }
+                  });
+                },
+                icon: Icon(Icons.date_range),
+              ),
+              if (_dueDate != null) Text("${_dueDate!.toLocal()}".split(' ')[0]),
+            ],
+          ),
         ],
       ),
       actions: [
@@ -342,6 +490,8 @@ class _TaskFormState extends State<TaskForm> {
             widget.onSave(Task(
               customer: _selectedCustomer!,
               task: _task,
+              dueDate: _dueDate,
+              priority: _priority,
               createdBy: widget.customers[0],
             ));
           },
@@ -351,6 +501,7 @@ class _TaskFormState extends State<TaskForm> {
     );
   }
 }
+
 
 class TaskListScreen extends StatelessWidget {
   final List<Task> tasks;
@@ -376,6 +527,26 @@ class TaskListScreen extends StatelessWidget {
               onTaskSelected(tasks[index]);
               Navigator.pop(context);
             },
+            trailing: IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: () {
+                // Вызов формы редактирования задачи
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return TaskForm(
+                      customers: customers,
+                      onSave: (editedTask) {
+                        // Обновление задачи в списке
+                        tasks[index] = editedTask;
+                        Navigator.pop(context);
+                      },
+                      initialTask: tasks[index], // Передаем выбранную задачу для редактирования
+                    );
+                  },
+                );
+              },
+            ),
           );
         },
       ),
@@ -400,11 +571,16 @@ class Customer {
 class Task {
   Customer customer;
   String task;
+  DateTime? dueDate; // Add dueDate property
+  String priority; // Add priority property
   final Customer createdBy;
 
   Task({
     required this.customer,
     required this.task,
+    this.dueDate,
+    this.priority = 'Low', // Default value for priority
     required this.createdBy,
   });
 }
+
